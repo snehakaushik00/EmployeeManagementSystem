@@ -12,34 +12,58 @@ The project follows a layered architecture to maintain clean code, separation of
 
 🛠️ Technologies Used
 Programming Language: Java
+
 Framework: Spring Boot
+
 ORM Framework: Hibernate
+
 Persistence Framework: Spring Data JPA
+
 Database: MySQL
+
 API Development: REST APIs
+
 Build Tool: Maven
+
 IDE: IntelliJ IDEA
+
 ✨ Features
 Employee Registration and Login: Allows employees to register and log in.
+
 Employee Management: Perform CRUD operations on employee records.
+
 Apply for Leave: Employees can submit leave requests.
+
 View Leave Requests: Retrieve and view submitted leave applications.
+
 Leave Approval: Administrators can approve leave requests.
+
 DTO Implementation: Uses Data Transfer Objects to transfer data between application layers.
+
 Input Validation: Ensures valid input data.
+
 Exception Handling: Implements custom and global exception handling.
+
 Pagination and Sorting: Efficiently retrieves and organizes records.
+
 Basic Authentication: Provides basic application authentication.
+
 🏗️ Project Architecture
 
 The application follows a layered architecture:
 
 Layer	Responsibility
+
 Controller Layer	Handles incoming HTTP requests and REST API endpoints.
+
 Service Layer	Contains business logic and application operations.
+
 Repository Layer	Handles database interactions using Spring Data JPA.
+
 Entity Layer	Defines database entities and relationships.
+
 DTO Layer	Transfers data between different application layers.
+
 🗄️ Database
 
 MySQL is used to store employee information, user details, and leave request records.
