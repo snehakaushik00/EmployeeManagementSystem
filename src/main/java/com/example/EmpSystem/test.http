@@ -1,0 +1,313 @@
+### =====================================================
+### 1. AUTHENTICATION - REGISTRATION
+### =====================================================
+
+### Register Employee
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Employee",
+  "email": "testemployee@gmail.com",
+  "password": "Employee@123",
+  "role": "MANAGER"
+}
+
+
+### Register Another Employee
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name": "Rahul",
+  "email": "rahul2@gmail.com",
+  "password": "Rahul@123",
+  "role": "EMPLOYEE"
+}
+
+
+### Register Manager
+### NOTE: Public registration now assigns EMPLOYEE role.
+### Use your existing manager account for manager testing.
+
+
+### =====================================================
+### 2. LOGIN - GET JWT TOKENS
+### =====================================================
+
+### Employee Login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "sneha@example.com",
+  "password": "Sneha@123"
+}
+
+
+### Manager Login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "manager@example.com",
+  "password": "Manager@123"
+}
+
+
+### =====================================================
+### 3. EMPLOYEE CRUD
+### =====================================================
+
+### Add Employee
+POST http://localhost:8080/employees
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "name": "Amit",
+  "email": "amit@gmail.com",
+  "department": "IT",
+  "salary": 55000
+}
+
+
+### Get All Employees
+GET http://localhost:8080/employees
+Authorization: Bearer {{employeeToken}}
+
+
+### Get Employee By ID
+GET http://localhost:8080/employees/3
+Authorization: Bearer {{employeeToken}}
+
+
+### Update Employee
+PUT http://localhost:8080/employees/3
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "name": "Sneha Kaushik",
+  "email": "sneha@gmail.com",
+  "department": "Java Development",
+  "salary": 75000
+}
+
+
+### Delete Employee
+DELETE http://localhost:8080/employees/3
+Authorization: Bearer {{employeeToken}}
+
+
+### Search Employee By Email
+GET http://localhost:8080/employees/email/sneha@gmail.com
+Authorization: Bearer {{employeeToken}}
+
+
+### Search Employee By Department
+GET http://localhost:8080/employees/department/IT
+Authorization: Bearer {{employeeToken}}
+
+
+### =====================================================
+### 4. EMPLOYEE DTO APIs
+### =====================================================
+
+### Create Employee Using DTO
+POST http://localhost:8080/employees/dto
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "name": "Priya",
+  "email": "priya@gmail.com",
+  "department": "HR",
+  "salary": 60000
+}
+
+
+### Get Employee DTO
+GET http://localhost:8080/employees/3/dto
+Authorization: Bearer {{employeeToken}}
+
+
+### =====================================================
+### 5. VALIDATION TESTING
+### =====================================================
+
+### Invalid Employee - Empty Name, Invalid Email, Negative Salary
+POST http://localhost:8080/employees/dto
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "wrongemail",
+  "department": "",
+  "salary": -5000
+}
+
+
+### =====================================================
+### 6. PAGINATION
+### =====================================================
+
+### First Page
+GET http://localhost:8080/employees/pagination?page=0&size=2
+Authorization: Bearer {{employeeToken}}
+
+
+### Second Page
+GET http://localhost:8080/employees/pagination?page=1&size=2
+Authorization: Bearer {{employeeToken}}
+
+
+### =====================================================
+### 7. SORTING
+### =====================================================
+
+### Sort By Name
+GET http://localhost:8080/employees/sort?field=name
+Authorization: Bearer {{employeeToken}}
+
+
+### Sort By Salary
+GET http://localhost:8080/employees/sort?field=salary
+Authorization: Bearer {{employeeToken}}
+
+
+### =====================================================
+### 8. PAGINATION + SORTING
+### =====================================================
+
+### First Page Sorted By Name
+GET http://localhost:8080/employees/pagination-sort?page=0&size=2&field=name
+Authorization: Bearer {{employeeToken}}
+
+
+### =====================================================
+### 9. LEAVE MANAGEMENT
+### =====================================================
+
+### Apply Leave
+POST http://localhost:8080/leaves/apply/2
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "startDate": "2026-11-20",
+  "endDate": "2026-11-22",
+  "reason": "Medical Leave"
+}
+
+
+### Get All Leaves - Manager
+GET http://localhost:8080/leaves
+Authorization: Bearer {{managerToken}}
+
+
+### Get Leaves By Employee ID
+GET http://localhost:8080/leaves/employee/2
+Authorization: Bearer {{employeeToken}}
+
+
+### Get Pending Leaves
+GET http://localhost:8080/leaves/status/PENDING
+Authorization: Bearer {{managerToken}}
+
+
+### Get Approved Leaves
+GET http://localhost:8080/leaves/status/APPROVED
+Authorization: Bearer {{managerToken}}
+
+
+### Get Rejected Leaves
+GET http://localhost:8080/leaves/status/REJECTED
+Authorization: Bearer {{managerToken}}
+
+
+### =====================================================
+### 10. MANAGER APPROVAL APIs
+### =====================================================
+
+### Approve Leave - MANAGER ONLY
+PUT http://localhost:8080/leaves/approve/2
+Authorization: Bearer {{managerToken}}
+
+
+### Reject Leave - MANAGER ONLY
+PUT http://localhost:8080/leaves/reject/2
+Authorization: Bearer {{managerToken}}
+
+
+### =====================================================
+### 11. AUTHORIZATION TESTING
+### =====================================================
+
+### Employee Trying to Approve Leave
+### Expected: 403 Forbidden
+PUT http://localhost:8080/leaves/approve/2
+Authorization: Bearer {{employeeToken}}
+
+
+### Employee Trying to Reject Leave
+### Expected: 403 Forbidden
+PUT http://localhost:8080/leaves/reject/2
+Authorization: Bearer {{employeeToken}}
+
+
+### Access Employees Without Token
+### Expected: 401 Unauthorized
+GET http://localhost:8080/employees
+
+
+### Access Employees With Invalid Token
+### Expected: 401 Unauthorized
+GET http://localhost:8080/employees
+Authorization: Bearer invalid-token
+
+
+### =====================================================
+### 12. EXCEPTION HANDLING
+### =====================================================
+
+### Employee Not Found
+### Expected: 404 Not Found
+GET http://localhost:8080/employees/999
+Authorization: Bearer {{employeeToken}}
+
+
+### Apply Leave With Invalid Employee
+### Expected: 404 Not Found
+POST http://localhost:8080/leaves/apply/999
+Authorization: Bearer {{employeeToken}}
+Content-Type: application/json
+
+{
+  "startDate": "2026-11-20",
+  "endDate": "2026-11-22",
+  "reason": "Medical Leave"
+}
+
+
+### Approve Invalid Leave
+### Expected: 404 Not Found
+PUT http://localhost:8080/leaves/approve/999
+Authorization: Bearer {{managerToken}}
+
+
+### =====================================================
+### 13. DUPLICATE REGISTRATION
+### =====================================================
+
+### Register Existing Email
+### Expected: Registration failure
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name": "Sneha",
+  "email": "sneha@example.com",
+  "password": "Sneha@123"
+}
